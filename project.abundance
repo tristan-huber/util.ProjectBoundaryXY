@@ -20,8 +20,8 @@
     },
     {
       "atomType": "Code",
-      "x": 0.5423177083333334,
-      "y": 0.2914285714285714,
+      "x": 0.5475260416666666,
+      "y": 0.27999999999999997,
       "uniqueID": "id-19731",
       "ioValues": [
         {
@@ -30,8 +30,8 @@
         }
       ],
       "interpreterVersion": 1,
-      "code": "/**\n * Projects the perimeter of every leaf in an Assembly tree onto the XY plane\n * (top-down view) and returns a matching Assembly tree of 2-D Drawings.\n *\n * @param input  Any Assembly (single leaf or nested tree) to project.\n * @returns      A mirrored Assembly tree where each leaf is a 2-D Drawing\n *               of the visible silhouette from above.\n */\nfunction run(input: Assembly) {\n  // Deep-copy the input so we don't mutate the upstream assembly.\n  let result = new Assembly(input);\n\n  result = result.onLeafs((leaf) => {\n    // Project this leaf's solid onto the XY plane (looking down -Z).\n    if (!leaf.is3D()) {\n      return leaf;\n    }\n    leaf.geometry = replicad.drawProjection(leaf.geometry, \"XY\").visible;\n    console.log(leaf.geometry)\n    leaf.plane = new replicad.Plane(\"XY\")\n\n    return leaf;\n  });\n\n  return result;\n}",
-      "compiledCode": "\"use strict\";\n/**\n * Projects the perimeter of every leaf in an Assembly tree onto the XY plane\n * (top-down view) and returns a matching Assembly tree of 2-D Drawings.\n *\n * @param input  Any Assembly (single leaf or nested tree) to project.\n * @returns      A mirrored Assembly tree where each leaf is a 2-D Drawing\n *               of the visible silhouette from above.\n */\nfunction run(input) {\n    // Deep-copy the input so we don't mutate the upstream assembly.\n    let result = new Assembly(input);\n    result = result.onLeafs((leaf) => {\n        // Project this leaf's solid onto the XY plane (looking down -Z).\n        if (!leaf.is3D()) {\n            return leaf;\n        }\n        leaf.geometry = replicad.drawProjection(leaf.geometry, \"XY\").visible;\n        console.log(leaf.geometry);\n        leaf.plane = new replicad.Plane(\"XY\");\n        return leaf;\n    });\n    return result;\n}\n"
+      "code": "/**\n * Projects the perimeter of every leaf in an Assembly tree onto the XY plane\n * (top-down view) and returns a matching Assembly tree of 2-D Drawings.\n *\n * @param input  Any Assembly (single leaf or nested tree) to project.\n * @returns      A mirrored Assembly tree where each leaf is a 2-D Drawing\n *               of the visible silhouette from above.\n */\nfunction run(input: Assembly) {\n  // Deep-copy the input so we don't mutate the upstream assembly.\n  let result = new Assembly(input);\n\n  result = result.onLeafs((leaf) => {\n    // Project this leaf's solid onto the XY plane (looking down -Z).\n    if (!leaf.is3D()) {\n      return leaf;\n    }\n    const bbox = leaf.geometry.boundingBox;\n    const center = bbox.center;\n    const corner = [\n      bbox.center[0] + bbox.width,\n      bbox.center[1] - bbox.height,\n      bbox.center[2] + bbox.depth,\n    ];\n    const camera = new replicad.ProjectionCamera(corner).lookAt(center);\n    const { visible, hidden } = replicad.drawProjection(leaf.geometry, camera);\n\n    leaf.geometry = visible;\n    leaf.plane = new replicad.Plane(\"XY\")\n\n    return leaf;\n  });\n\n  return result;\n}",
+      "compiledCode": "\"use strict\";\n/**\n * Projects the perimeter of every leaf in an Assembly tree onto the XY plane\n * (top-down view) and returns a matching Assembly tree of 2-D Drawings.\n *\n * @param input  Any Assembly (single leaf or nested tree) to project.\n * @returns      A mirrored Assembly tree where each leaf is a 2-D Drawing\n *               of the visible silhouette from above.\n */\nfunction run(input) {\n    // Deep-copy the input so we don't mutate the upstream assembly.\n    let result = new Assembly(input);\n    result = result.onLeafs((leaf) => {\n        // Project this leaf's solid onto the XY plane (looking down -Z).\n        if (!leaf.is3D()) {\n            return leaf;\n        }\n        const bbox = leaf.geometry.boundingBox;\n        const center = bbox.center;\n        const corner = [\n            bbox.center[0] + bbox.width,\n            bbox.center[1] - bbox.height,\n            bbox.center[2] + bbox.depth,\n        ];\n        const camera = new replicad.ProjectionCamera(corner).lookAt(center);\n        const { visible, hidden } = replicad.drawProjection(leaf.geometry, camera);\n        leaf.geometry = visible;\n        leaf.plane = new replicad.Plane(\"XY\");\n        return leaf;\n    });\n    return result;\n}\n"
     },
     {
       "atomType": "Rectangle",
@@ -65,8 +65,7 @@
         },
         {
           "name": "yDist",
-          "ioValue": 3,
-          "currentEquation": "3"
+          "ioValue": 3
         },
         {
           "name": "zDist",
@@ -185,19 +184,44 @@
         },
         {
           "name": "y-axis degrees",
-          "ioValue": -1
+          "ioValue": 0,
+          "currentEquation": "0"
         },
         {
           "name": "z-axis degrees",
-          "ioValue": 45,
-          "currentEquation": "45"
+          "ioValue": 45
+        }
+      ]
+    },
+    {
+      "atomType": "Move",
+      "x": 0.44856770833333337,
+      "y": 0.4657142857142857,
+      "uniqueID": "id-19788",
+      "ioValues": [
+        {
+          "name": "geometry",
+          "ioValue": "__GEOMETRY_INPUT__"
+        },
+        {
+          "name": "xDist",
+          "ioValue": 0
+        },
+        {
+          "name": "yDist",
+          "ioValue": 0
+        },
+        {
+          "name": "zDist",
+          "ioValue": 10,
+          "currentEquation": "10"
         }
       ]
     },
     {
       "atomType": "GitHubMolecule",
-      "x": 0.47265625,
-      "y": 0.7114285714285714,
+      "x": 0.47526041666666674,
+      "y": 0.7028571428571428,
       "uniqueID": "id-19776",
       "name": "IthFromAssembly",
       "ioValues": [
@@ -207,8 +231,7 @@
         },
         {
           "name": "i",
-          "ioValue": 0,
-          "currentEquation": "0"
+          "ioValue": 0
         }
       ],
       "topLevel": false,
@@ -305,30 +328,6 @@
       "unitsKey": "Unitless",
       "fileTypeVersion": 1,
       "lastReloadedFromGithubAt": 1780002566082
-    },
-    {
-      "atomType": "Move",
-      "x": 0.44856770833333337,
-      "y": 0.4657142857142857,
-      "uniqueID": "id-19788",
-      "ioValues": [
-        {
-          "name": "geometry",
-          "ioValue": "__GEOMETRY_INPUT__"
-        },
-        {
-          "name": "xDist",
-          "ioValue": 0
-        },
-        {
-          "name": "yDist",
-          "ioValue": 0
-        },
-        {
-          "name": "zDist",
-          "ioValue": 100
-        }
-      ]
     }
   ],
   "allConnectors": [
@@ -373,14 +372,14 @@
       "ap2ID": "id-19788"
     },
     {
-      "ap2Name": "input",
-      "ap1ID": "id-19776",
-      "ap2ID": "id-19731"
-    },
-    {
       "ap2Name": "geometry",
       "ap1ID": "id-19788",
       "ap2ID": "id-19776"
+    },
+    {
+      "ap2Name": "input",
+      "ap1ID": "id-19776",
+      "ap2ID": "id-19731"
     }
   ],
   "unitsKey": "Unitless",
