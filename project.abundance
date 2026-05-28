@@ -26,8 +26,8 @@
     },
     {
       "atomType": "Code",
-      "x": 0.5240885416666666,
-      "y": 0.6028571428571429,
+      "x": 0.5807291666666666,
+      "y": 0.27714285714285714,
       "uniqueID": "id-19731",
       "ioValues": [
         {
@@ -36,8 +36,8 @@
         }
       ],
       "interpreterVersion": 1,
-      "code": "/**\n * Projects the perimeter of every leaf in an Assembly tree onto the XY plane\n * (top-down view) and returns a matching Assembly tree of 2-D Drawings.\n *\n * @param input  Any Assembly (single leaf or nested tree) to project.\n * @returns      A mirrored Assembly tree where each leaf is a 2-D Drawing\n *               of the visible silhouette from above.\n */\nfunction run(input: Assembly) {\n  // Deep-copy the input so we don't mutate the upstream assembly.\n  let result = new Assembly(input);\n\n  result = result.onLeafs((leaf) => {\n    // Project this leaf's solid onto the XY plane (looking down -Z).\n    if (!leaf.is3D()) {\n      return leaf;\n    }\n    const { visible, hidden } = replicad.drawProjection(leaf.geometry, \"XY\");\n\n    leaf.plane = new replicad.Plane(\"XY\")\n    leaf.geometry = visible.approximate(\"svg\", {tolerance: 0.01, continuity: \"C0\"});\n\n    return leaf;\n  });\n\n  return result;\n}",
-      "compiledCode": "\"use strict\";\n/**\n * Projects the perimeter of every leaf in an Assembly tree onto the XY plane\n * (top-down view) and returns a matching Assembly tree of 2-D Drawings.\n *\n * @param input  Any Assembly (single leaf or nested tree) to project.\n * @returns      A mirrored Assembly tree where each leaf is a 2-D Drawing\n *               of the visible silhouette from above.\n */\nfunction run(input) {\n    // Deep-copy the input so we don't mutate the upstream assembly.\n    let result = new Assembly(input);\n    result = result.onLeafs((leaf) => {\n        // Project this leaf's solid onto the XY plane (looking down -Z).\n        if (!leaf.is3D()) {\n            return leaf;\n        }\n        const { visible, hidden } = replicad.drawProjection(leaf.geometry, \"XY\");\n        leaf.plane = new replicad.Plane(\"XY\");\n        leaf.geometry = visible.approximate(\"svg\", { tolerance: 0.01, continuity: \"C0\" });\n        return leaf;\n    });\n    return result;\n}\n"
+      "code": "/**\n * Projects the perimeter of every leaf in an Assembly tree onto the XY plane\n * (top-down view) and returns a matching Assembly tree of 2-D Drawings.\n *\n * @param input  Any Assembly (single leaf or nested tree) to project.\n * @returns      A mirrored Assembly tree where each leaf is a 2-D Drawing\n *               of the visible silhouette from above.\n */\nfunction run(input: Assembly) {\n  // Deep-copy the input so we don't mutate the upstream assembly.\n  let result = new Assembly(input);\n\n  result = result.onLeafs((leaf) => {\n    // Project this leaf's solid onto the XY plane (looking down -Z).\n    if (!leaf.is3D()) {\n      return leaf;\n    }\n    const { visible, hidden } = replicad.drawProjection(leaf.geometry, \"XY\");\n\n    leaf.plane = new replicad.Plane(\"XY\")\n    leaf.geometry = visible.sketchOnPlane(\"XY\");\n\n    return leaf;\n  });\n\n  return result;\n}",
+      "compiledCode": "\"use strict\";\n/**\n * Projects the perimeter of every leaf in an Assembly tree onto the XY plane\n * (top-down view) and returns a matching Assembly tree of 2-D Drawings.\n *\n * @param input  Any Assembly (single leaf or nested tree) to project.\n * @returns      A mirrored Assembly tree where each leaf is a 2-D Drawing\n *               of the visible silhouette from above.\n */\nfunction run(input) {\n    // Deep-copy the input so we don't mutate the upstream assembly.\n    let result = new Assembly(input);\n    result = result.onLeafs((leaf) => {\n        // Project this leaf's solid onto the XY plane (looking down -Z).\n        if (!leaf.is3D()) {\n            return leaf;\n        }\n        const { visible, hidden } = replicad.drawProjection(leaf.geometry, \"XY\");\n        leaf.plane = new replicad.Plane(\"XY\");\n        leaf.geometry = visible.sketchOnPlane(\"XY\");\n        return leaf;\n    });\n    return result;\n}\n"
     },
     {
       "atomType": "Rectangle",
@@ -357,36 +357,28 @@
         },
         {
           "name": "Shape 1",
-          "ioValue": {
-            "geometry": "5b51724f-0",
-            "color": "#aad7f2",
-            "tags": [],
-            "bom": [],
-            "plane": {
-              "origin": [
-                0,
-                0,
-                0
-              ],
-              "xDir": [
-                1,
-                0,
-                0
-              ],
-              "normal": [
-                0,
-                0,
-                1
-              ]
-            },
-            "dimension": "2D"
-          }
+          "ioValue": null
         },
         {
           "name": "Shape 2",
           "ioValue": null
         }
       ]
+    },
+    {
+      "atomType": "Code",
+      "x": 0.5436197916666666,
+      "y": 0.7142857142857143,
+      "uniqueID": "id-19853",
+      "ioValues": [
+        {
+          "name": "input",
+          "ioValue": "__GEOMETRY_INPUT__"
+        }
+      ],
+      "interpreterVersion": 1,
+      "code": "function run(input: Assembly) {\n  const result = new Assembly(input);\n\n  result.onLeafs((leaf) => {\n    const projection = replicad.drawProjection(leaf.geometry, \"top\");\n\n    const organised = replicad.organiseBlueprints(\n      projection.visible._innerShape\n    );\n\n    console.log(organised)\n\n    const outerBlueprints = organised.map((b) =>\n      \"blueprints\" in b ? b.blueprints : b\n    );\n\n    // Build a child Assembly for each island, then return a branch\n    // that contains all of them.\n    const islandAssemblies = outerBlueprints.map(\n      (bp) =>\n        new Assembly({\n          geometry: new replicad.Drawing(bp),\n          color: leaf.color,\n          tags: leaf.tags,\n          bom: leaf.bom,\n        })\n    );\n\n    const branch = new Assembly();\n    branch.geometry = islandAssemblies;\n    return branch;\n  });\n\n  return result;\n}",
+      "compiledCode": "\"use strict\";\nfunction run(input) {\n    const result = new Assembly(input);\n    result.onLeafs((leaf) => {\n        const projection = replicad.drawProjection(leaf.geometry, \"top\");\n        const organised = replicad.organiseBlueprints(projection.visible._innerShape);\n        console.log(organised);\n        const outerBlueprints = organised.map((b) => \"blueprints\" in b ? b.blueprints : b);\n        // Build a child Assembly for each island, then return a branch\n        // that contains all of them.\n        const islandAssemblies = outerBlueprints.map((bp) => new Assembly({\n            geometry: new replicad.Drawing(bp),\n            color: leaf.color,\n            tags: leaf.tags,\n            bom: leaf.bom,\n        }));\n        const branch = new Assembly();\n        branch.geometry = islandAssemblies;\n        return branch;\n    });\n    return result;\n}\n"
     }
   ],
   "allConnectors": [
@@ -449,6 +441,11 @@
       "ap2Name": "input",
       "ap1ID": "id-19776",
       "ap2ID": "id-19731"
+    },
+    {
+      "ap2Name": "input",
+      "ap1ID": "id-19776",
+      "ap2ID": "id-19853"
     }
   ],
   "unitsKey": "Unitless",
