@@ -36,8 +36,8 @@
         }
       ],
       "interpreterVersion": 1,
-      "code": "/**\n * Projects the perimeter of every leaf in an Assembly tree onto the XY plane\n * (top-down view) and returns a matching Assembly tree of 2-D Drawings.\n *\n * @param input  Any Assembly (single leaf or nested tree) to project.\n * @returns      A mirrored Assembly tree where each leaf is a 2-D Drawing\n *               of the visible silhouette from above.\n */\nfunction run(input: Assembly) {\n  // Deep-copy the input so we don't mutate the upstream assembly.\n  let result = new Assembly(input);\n\n  result = result.onLeafs((leaf) => {\n    // Project this leaf's solid onto the XY plane (looking down -Z).\n    if (!leaf.is3D()) {\n      return leaf;\n    }\n    const { visible, hidden } = replicad.drawProjection(leaf.geometry, \"XY\");\n\n    leaf.plane = new replicad.Plane(\"XY\")\n    leaf.geometry = visible.sketchOnPlane(\"XY\");\n\n    return leaf;\n  });\n\n  return result;\n}",
-      "compiledCode": "\"use strict\";\n/**\n * Projects the perimeter of every leaf in an Assembly tree onto the XY plane\n * (top-down view) and returns a matching Assembly tree of 2-D Drawings.\n *\n * @param input  Any Assembly (single leaf or nested tree) to project.\n * @returns      A mirrored Assembly tree where each leaf is a 2-D Drawing\n *               of the visible silhouette from above.\n */\nfunction run(input) {\n    // Deep-copy the input so we don't mutate the upstream assembly.\n    let result = new Assembly(input);\n    result = result.onLeafs((leaf) => {\n        // Project this leaf's solid onto the XY plane (looking down -Z).\n        if (!leaf.is3D()) {\n            return leaf;\n        }\n        const { visible, hidden } = replicad.drawProjection(leaf.geometry, \"XY\");\n        leaf.plane = new replicad.Plane(\"XY\");\n        leaf.geometry = visible.sketchOnPlane(\"XY\");\n        return leaf;\n    });\n    return result;\n}\n"
+      "code": "/**\n * Projects the perimeter of every leaf in an Assembly tree onto the XY plane\n * (top-down view) and returns a matching Assembly tree of 2-D Drawings.\n *\n * @param input  Any Assembly (single leaf or nested tree) to project.\n * @returns      A mirrored Assembly tree where each leaf is a 2-D Drawing\n *               of the visible silhouette from above.\n */\nfunction run(input: Assembly) {\n  // Deep-copy the input so we don't mutate the upstream assembly.\n  let result = new Assembly(input);\n\n  result = result.onLeafs((leaf) => {\n    // Project this leaf's solid onto the XY plane (looking down -Z).\n    if (!leaf.is3D()) {\n      return leaf;\n    }\n    const { visible, hidden } = replicad.drawProjection(leaf.geometry, \"XY\");\n\n    const boundary = \"blueprints\" in visible.innerShape ?\n      visible.innerShape.blueprints[0] : visible\n    console.log(boundary)\n\n    leaf.plane = new replicad.Plane(\"XY\")\n    leaf.geometry = new replicad.Drawing(boundary)\n\n    return leaf;\n  });\n\n  return result;\n}",
+      "compiledCode": "\"use strict\";\n/**\n * Projects the perimeter of every leaf in an Assembly tree onto the XY plane\n * (top-down view) and returns a matching Assembly tree of 2-D Drawings.\n *\n * @param input  Any Assembly (single leaf or nested tree) to project.\n * @returns      A mirrored Assembly tree where each leaf is a 2-D Drawing\n *               of the visible silhouette from above.\n */\nfunction run(input) {\n    // Deep-copy the input so we don't mutate the upstream assembly.\n    let result = new Assembly(input);\n    result = result.onLeafs((leaf) => {\n        // Project this leaf's solid onto the XY plane (looking down -Z).\n        if (!leaf.is3D()) {\n            return leaf;\n        }\n        const { visible, hidden } = replicad.drawProjection(leaf.geometry, \"XY\");\n        const boundary = \"blueprints\" in visible.innerShape ?\n            visible.innerShape.blueprints[0] : visible;\n        console.log(boundary);\n        leaf.plane = new replicad.Plane(\"XY\");\n        leaf.geometry = new replicad.Drawing(boundary);\n        return leaf;\n    });\n    return result;\n}\n"
     },
     {
       "atomType": "Rectangle",
@@ -190,7 +190,7 @@
         },
         {
           "name": "y-axis degrees",
-          "ioValue": 1
+          "ioValue": 4
         },
         {
           "name": "z-axis degrees",
@@ -357,7 +357,30 @@
         },
         {
           "name": "Shape 1",
-          "ioValue": null
+          "ioValue": {
+            "geometry": "fc58cd97-0",
+            "color": "#aad7f2",
+            "tags": [],
+            "bom": [],
+            "plane": {
+              "origin": [
+                0,
+                0,
+                0
+              ],
+              "xDir": [
+                1,
+                0,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            "dimension": "2D"
+          }
         },
         {
           "name": "Shape 2",
