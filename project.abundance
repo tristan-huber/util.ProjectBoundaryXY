@@ -256,8 +256,8 @@
     },
     {
       "atomType": "Code",
-      "x": 0.6354166666666666,
-      "y": 0.21999999999999997,
+      "x": 0.607421875,
+      "y": 0.24702380952380953,
       "uniqueID": "id-19853",
       "ioValues": [
         {
@@ -266,8 +266,8 @@
         }
       ],
       "interpreterVersion": 1,
-      "code": "function run(input: Assembly) {\n  const result = new Assembly(input);\n\n  result.onLeafs((leaf) => {\n    if (leaf.is2D()) {\n      return leaf\n    }\n    if (leaf.isPoint()) {\n      leaf.geometry = leaf.geometry.translateZ(-1 * leaf.geometry.asTuple()[2])\n      return leaf;\n    }\n    if (leaf.isWire()) {\n      leaf.geometry = replicad.drawProjection(leaf.geometry, \"top\").visible\n      return leaf;\n    }\n    if (leaf.is3D()) {\n      let result: replicad.Drawing|undefined = undefined;\n      leaf.geometry.edges.forEach((edge) => {\n        const p = replicad.drawProjection(edge).visible\n        if (result == undefined) {\n          result = p;\n        } else {\n          result.fuse(p);\n        }\n      })\n      leaf.geometry = result;\n      return leaf;\n    }\n    console.warn(\"Unknown type of leaf\")\n    return leaf;\n  });\n\n  return result;\n}",
-      "compiledCode": "\"use strict\";\nfunction run(input) {\n    const result = new Assembly(input);\n    result.onLeafs((leaf) => {\n        if (leaf.is2D()) {\n            return leaf;\n        }\n        if (leaf.isPoint()) {\n            leaf.geometry = leaf.geometry.translateZ(-1 * leaf.geometry.asTuple()[2]);\n            return leaf;\n        }\n        if (leaf.isWire()) {\n            leaf.geometry = replicad.drawProjection(leaf.geometry, \"top\").visible;\n            return leaf;\n        }\n        if (leaf.is3D()) {\n            let result = undefined;\n            leaf.geometry.edges.forEach((edge) => {\n                const p = replicad.drawProjection(edge).visible;\n                if (result == undefined) {\n                    result = p;\n                }\n                else {\n                    result.fuse(p);\n                }\n            });\n            leaf.geometry = result;\n            return leaf;\n        }\n        console.warn(\"Unknown type of leaf\");\n        return leaf;\n    });\n    return result;\n}\n"
+      "code": "function run(input: Assembly) {\n  const result = new Assembly(input);\n\n  result.onLeafs((leaf) => {\n    if (leaf.is2D()) {\n      return leaf\n    }\n    if (leaf.isPoint()) {\n      leaf.geometry = leaf.geometry.translateZ(-1 * leaf.geometry.asTuple()[2])\n      return leaf;\n    }\n    if (leaf.isWire()) {\n      leaf.geometry = replicad.drawProjection(leaf.geometry, \"top\").visible\n      return leaf;\n    }\n    if (leaf.is3D()) {\n      const faces = leaf.geometry.faces.map((face) => {\n        return replicad.drawProjection(face, \"XY\").visible\n      });\n      console.log(faces)\n      return leaf;\n    }\n    console.warn(\"Unknown type of leaf\")\n    return leaf;\n  });\n\n  return result;\n}",
+      "compiledCode": "\"use strict\";\nfunction run(input) {\n    const result = new Assembly(input);\n    result.onLeafs((leaf) => {\n        if (leaf.is2D()) {\n            return leaf;\n        }\n        if (leaf.isPoint()) {\n            leaf.geometry = leaf.geometry.translateZ(-1 * leaf.geometry.asTuple()[2]);\n            return leaf;\n        }\n        if (leaf.isWire()) {\n            leaf.geometry = replicad.drawProjection(leaf.geometry, \"top\").visible;\n            return leaf;\n        }\n        if (leaf.is3D()) {\n            const faces = leaf.geometry.faces.map((face) => {\n                return replicad.drawProjection(face, \"XY\").visible;\n            });\n            console.log(faces);\n            return leaf;\n        }\n        console.warn(\"Unknown type of leaf\");\n        return leaf;\n    });\n    return result;\n}\n"
     },
     {
       "atomType": "Extrude",
